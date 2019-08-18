@@ -9,7 +9,7 @@
 
 ## Unsigned Integer Encodings
 * The range of values that can be represented as a `w-bit` vector: [0, 2<sup>w</sup>-1]
-* Every number between `0` and 2<sup>w -1</sup> has a unique encoding as a `w-bit` value
+* Every number between `0` and 2<sup>w</sup>-1 has a unique encoding as a `w-bit` value
 
 ## Signed Integer Representation
 
