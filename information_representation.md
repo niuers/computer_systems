@@ -115,7 +115,28 @@
 * Truncating a number can alter its value --- a form of overflow.
 
 ## Integer Arithmetic
+
 ### Unsigned Addition
+* **Word Size Inflation**: We cannot place any bound on the word size required to fully represent the results of arithmetic operations (e.g. when we add two unsigned numbers, we need larger word size to accomodate the sum).
+  * **Lisp** language actually support `arbitrary size` arithmetic to allow integers of any size
+  
+* Most programming languages suppose `fixed-size` arithmetic, hen operations ssuch as "addition" and "multiplication" differ from their counterpart operations over integers.
+
+* Unsigned Addition
+> Unsigned Addition: for two unsigned integers `x` and `y` with `w` bits, truncate the integer sum `x+y` to be `w` bits long and then viewing the result as an unsigned number.
+> Overflow: An arithmetic operation is said to `overflow` when the full integer result cannot fit within the word size limits of the data type.
+
+  * It can be characterized as a form of **modular arithmetic**: computing the sum modulo 2<sup>w</sup> by simply discarding any bits with weight greater than 2<sup>w-1</sup> in the bit-level representation of `x+y`.
+  * The addition **overflow**s when the sum is greater than or equal to 2<sup>w</sup>
+  * Modular addition forms a mathematical structure known as an `abelian group`. 
+    * It is commutative (`abelian`)
+    * It is associative
+    * It has an identity element 0
+    * Every element has an additive inverse
+  
+
+
+
 ### Unsigned Multiplication
 ### Two’s-Complement Addition
 ### Two’s-Complement Negation
