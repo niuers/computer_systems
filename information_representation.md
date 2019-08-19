@@ -6,7 +6,7 @@
   * [Unsigned Integer Encodings](#unsigned-integer-encodings)
   * [Signed Integer Representation](#signed-integer-representation)
   * [Integer Arithmetic](#integer-arithmetic)
-* []()
+* [Floating Point](#floating-point)
 * []()
 * []()
 * []()
@@ -71,6 +71,7 @@
 * Sign Magnitude
 
 ### Conversions between Signed and Unsigned
+
 #### C Language
 * C allows casting between different numeric data types.
 * For most implementations of C, the effects of casting signed value to unsigned (or vice versa) is based on a bit-level perspective, rather than on a numeric one.
@@ -86,7 +87,7 @@
 * Some possibly nonintuitive behavior arises due to C's handling of expressions containing combinations of signed and unsiged quantities.
   * When either operand of a comparison is unsigned, the other operand is implicitly cast to unsigned. 
   
-* Implications
+#### Java Language
   * Java supports only **signed integers**.
   * Java requires that they be implemented with two’s-complement arithmetic. The normal right shift operator >> is guaranteed to perform an arithmetic shift. The special operator >>> is defined to perform a logical right shift.
   * Unsigned values can still be useful when we want to think of words as just collections of bits with no numeric interpretation
@@ -94,6 +95,8 @@
     * To represent addresses
     * To implement mathematical packages for modular arithmetic
     * To implement multiprecision arithmetic in which numbers are represented by arrays of words.
+#### Python Language    
+  * Python has no unsigned integer data type.
     
 ### Expanding the Bit Representation of a Number
 * Zero Extension: To convert an **unsigned number** to a larger data type, we can add leading zeros to the representation.
@@ -103,3 +106,13 @@
 * Truncating a number can alter its value --- a form of overflow.
 
 ## Integer Arithmetic
+### Unsigned Addition
+### Unsigned Multiplication
+### Two’s-Complement Addition
+### Two’s-Complement Negation
+### Two’s-Complement Multiplication
+### Multiplying by Constants
+### Dividing by Powers of 2
+
+
+# Floating Point
