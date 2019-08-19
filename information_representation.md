@@ -5,6 +5,7 @@
   * [Integer Data Types](#integer-data-types)
   * [Unsigned Integer Encodings](#unsigned-integer-encodings)
   * [Signed Integer Representation](#signed-integer-representation)
+  * [Integer Arithmetic](#integer-arithmetic)
 * []()
 * []()
 * []()
@@ -59,11 +60,46 @@
 * For nonnegative `x`, the `w-bit` representation of `-x` is: 2<sup>w</sup> - x. (???)
 * Nearly all machines represent signed integers in two's-complement form.
 
-### Alternative Representations of Signed Numbers
+* Implications
+  * The C standards do not require signed integers to be represented in two's-complement form, but nearly all machines do so.
+  * The Java standard requires a two's-complement representation with the exact same ranges as in 64-bit case.
+    * In Java the single-byte type is called `byte` instead of `char`.
+
+
+###  NuAlternative Representations of Signedmbers
 * Ones' Complement
 * Sign Magnitude
 
-### Implications
-* The C standards do not require signed integers to be represented in two's-complement form, but nearly all machines do so.
-* The Java standard requires a two's-complement representation with the exact same ranges as in 64-bit case.
-  * In Java the single-byte type is called `byte` instead of `char`.
+### Conversions between Signed and Unsigned
+#### C Language
+* C allows casting between different numeric data types.
+* For most implementations of C, the effects of casting signed value to unsigned (or vice versa) is based on a bit-level perspective, rather than on a numeric one.
+  * General rule of most C implementations in handling conversions between signed and unsigned numbers with the same word size: The numeric values might change, but the bit patterns do not.
+    * Ex1. 
+    ```
+    short int v = -12345;
+    unsigned short uv = (unsigned short) v; 
+    printf("v = %d, uv = %u\n", v, uv);
+    # v = -12345, uv = 53191
+    ```
+  * The maximum value of unsigned integer has the same bit representation as does `-1` in two's-complement form.
+* Some possibly nonintuitive behavior arises due to C's handling of expressions containing combinations of signed and unsiged quantities.
+  * When either operand of a comparison is unsigned, the other operand is implicitly cast to unsigned. 
+  
+* Implications
+  * Java supports only **signed integers**.
+  * Java requires that they be implemented with two’s-complement arithmetic. The normal right shift operator >> is guaranteed to perform an arithmetic shift. The special operator >>> is defined to perform a logical right shift.
+  * Unsigned values can still be useful when we want to think of words as just collections of bits with no numeric interpretation
+    * Packing a word with `flags` describing various Boolean conditions
+    * To represent addresses
+    * To implement mathematical packages for modular arithmetic
+    * To implement multiprecision arithmetic in which numbers are represented by arrays of words.
+    
+### Expanding the Bit Representation of a Number
+* Zero Extension: To convert an **unsigned number** to a larger data type, we can add leading zeros to the representation.
+* Sign Extension: To convert a **two's-complement number** to a larger data type, adding copies of the most significant bit to the representation. 
+
+### Truncating Numbers
+* Truncating a number can alter its value --- a form of overflow.
+
+## Integer Arithmetic
