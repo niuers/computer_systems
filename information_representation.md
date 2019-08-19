@@ -1,10 +1,15 @@
 # Table of Contents
 * [Information Storage](#information-storage)
   * [Data Sizes](#data-sizes)
+  
 * [Integer Representation](#integer-representation)
   * [Integer Data Types](#integer-data-types)
   * [Unsigned Integer Encodings](#unsigned-integer-encodings)
   * [Signed Integer Representation](#signed-integer-representation)
+  * [Signed vs. Unsigned Numbers](#signed-vs-unsigned-numbers)
+    * [Conversions between Signed and Unsigned](#conversions-between-signed-and-unsigned)
+    * [Expanding the Bit Representation of a Number](#expanding-the-bit-representation-of-a-number)
+    * [Truncating Numbers](#truncating-numbers)
   * [Integer Arithmetic](#integer-arithmetic)
 * [Floating Point](#floating-point)
 * []()
@@ -22,7 +27,7 @@
 ### Virtual Address Space
 * The most important system parameter determined by the word size is the maximum size of the virtual address space.
 
-### Examples
+### C Language
 * The C language allocate different number of bytes for different C data types. 
   * However the exact numbers of bytes for some data types depends on how the program is compiled for(32-bit or 64-bit).
     * Data type `char *` (a pointer) and `long` commonly have 4 bytes in 32-bit programs and 8 bytes in 64-bit programs.
@@ -45,12 +50,15 @@
   * Their data sizes and range of values are fixed regardless of compiler and machine settings.
   * Example: `int32_t`, `int64_t`
   
+#### Integer Data Types in Python
+* 
+
 ## Unsigned Integer Encodings
+
 * The range of values that can be represented as a `w-bit` vector: [0, 2<sup>w</sup>-1]
 * Every number between `0` and 2<sup>w</sup>-1 has a unique encoding as a `w-bit` value
 
 ## Signed Integer Representation
-
 ### Two's-Complement Encodings
 > It's defined by interpreting the most significant bit (i.e. x<sub>w-1</sub>, also called the 'sign bit') of the word to have negative weight.
 
@@ -66,10 +74,11 @@
     * In Java the single-byte type is called `byte` instead of `char`.
 
 
-###  NuAlternative Representations of Signedmbers
+### Alternative Representations of Signed Numbers
 * Ones' Complement
 * Sign Magnitude
 
+## Signed vs. Unsigned Numbers
 ### Conversions between Signed and Unsigned
 
 #### C Language
