@@ -124,6 +124,7 @@
 
 * Unsigned Addition
 > Unsigned Addition: for two unsigned integers `x` and `y` with `w` bits, truncate the integer sum `x+y` to be `w` bits long and then viewing the result as an unsigned number.
+
 > Overflow: An arithmetic operation is said to `overflow` when the full integer result cannot fit within the word size limits of the data type.
 
   * It can be characterized as a form of **modular arithmetic**: computing the sum modulo 2<sup>w</sup> by simply discarding any bits with weight greater than 2<sup>w-1</sup> in the bit-level representation of `x+y`.
