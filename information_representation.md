@@ -134,16 +134,55 @@
     * It is associative
     * It has an identity element 0
     * Every element has an additive inverse
+    
+### Two’s-Complement Addition
+* We avoid ever-expanding data sizes by truncating the representation to w bits. The result is not a modular addition.
+* There are positive overflow and negative overflow.
+* The `w-bit` two’s-complement sum of two numbers has the exact same bit-level representation as the unsigned sum. In fact, most computers use the same machine instruction to perform either unsigned or signed addition.
   
-
-
+### Two’s-Complement Negation
+* For `w-bit` two’s-complement addition, TMin<sub>w</sub> (The minimum value with `w-bit` two's-complete representation) is its own additive inverse, while any other value `x` has `−x` as its additive inverse.
+* Two techniques to determine two's-complement negation
+  * Complement the bits and then increment the result.
+  ```
+  -x = ~x + 1 # in C
+  ```
+    * Example: The complement of `0xf` is `0x0` and the complement of `0xa` is `0x5`, so `0xfffffffa` is the two's-complement representation of `-6`.
+  * Split the bit vector into two parts. Let `k` be the position of the rightmost `1`, we then complement each bit to the left of bit position `k` to get the negation.
 
 ### Unsigned Multiplication
-### Two’s-Complement Addition
-### Two’s-Complement Negation
+* Unsigned multiplication in C is defined to yield the `w-bit` value given by the low-order `w` bits of thw `2w-bit` integer product. This is equivalent to computing the product value modulo 2<sup>w</sup>. 
+
 ### Two’s-Complement Multiplication
+* Signed multiplication in C generally is performed by truncating the `2w-bit` product to `w` bits. This is equivalent to first computing its value modulo 2<sup>w</sup> and then converting from unsigned to two's complement. 
+
+* The bit-level representation of the product operation is identical for both unsigned and two's-complement multiplication. 
+
 ### Multiplying by Constants
+* Integer multiply instruction on many machines require more clock cycles than other integer operations (e.g. addition, subtraction, bit-level operations, shifting only require 1 clock cycle). 
+* Compilers thus provide an important optimization: They attempt to replace multiplications by constant factors with combinations of shit and addition operations. 
+* Given that integer multiplication is more costly than shifting and adding, many C compilers try to remove many cases where an integer is being multiplied by a constant with combinations of shifting, adding, and subtracting. 
+
+#### Multiplication by a power of 2
+* Unsigned multiplication by a power of 2 is equivalent to shift the value left.
+  * For C variables `x` and `k` with unsigned values `x` and `k`, such that `0<=k<w`, the C expression `x<<k` yields the value `x*2^k`.
+* Two's-complement multiplication by a power of 2
+  * For C variables `x` and `k` with tow's-complement value `x` and unsigned value `k`, such that `0<=k<w`, the C expression `x<<k` yields the value `x*2^k`. 
+  * This is because the bit-level operation of fixed-size two's-complement arithmetic is equivalent to that for unsigned arithmetic.
+* Multiplying by a power of 2 can cause overflow with either unsigned or two's-complement arithmetic. Even then, we get the same effect by shifting. 
+
 ### Dividing by Powers of 2
-
-
+* Integer division on most machines is even slower than multiplication, requiring 30 or more clock cycles. 
+* Integer division always rounds toward zero. That is, it should round down a positive result but round up a negative one. For example, `8/3=2`. 
+  * Arithmetic right shift is similar to division by a power of 2, except that it rounds down rather than toward zero.
+  
+* Unsigned integers
+  * Right shifting is guaranteed to be performed logically for unsigned values.
+  * For C variables `x` and `k` with unsigned values `x` and `k`, such that `0<=k<w`, the C expression `x>>k` yields the value `floor(x/2^k)`.
+* Two's-complement multiplication by a power of 2
+  * First, the shifting should be performed using an arithmetic right shift, to ensure that negative values remain negative.
+  * Two’s-complement division by a power of 2, rounding down
+    * Let C variables `x` and `k` have two’s-complement value `x` and unsigned value `k` respectively, such that `0<=k<w`. The C expression `x>>k`, when the shift is performed arithmetically, yields the value `floor(x/2^k)`.
+  * For `x>=0`, variable `x` has 0 as the most significant bit, and so the effect of an arithmetic shift is the same as for a logical right shift.
+    
 # Floating Point
