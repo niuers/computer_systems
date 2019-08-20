@@ -172,17 +172,31 @@
 * Multiplying by a power of 2 can cause overflow with either unsigned or two's-complement arithmetic. Even then, we get the same effect by shifting. 
 
 ### Dividing by Powers of 2
+
 * Integer division on most machines is even slower than multiplication, requiring 30 or more clock cycles. 
-* Integer division always rounds toward zero. That is, it should round down a positive result but round up a negative one. For example, `8/3=2`. 
-  * Arithmetic right shift is similar to division by a power of 2, except that it rounds down rather than toward zero.
+* Integer division convention always **rounds toward zero**. That is, it should round down a positive result but round up a negative one. For example, `8/3=2`. 
+
+##### Two Right Shifts
+* Logical Right Shift: It has the same effect as dividing by 2<sup>k</sup> and then rounding toward zero.
+* Arithmetic Right Shift:  It is similar to division by a power of 2, except that it rounds down rather than toward zero.
   
-* Unsigned integers
-  * Right shifting is guaranteed to be performed logically for unsigned values.
-  * For C variables `x` and `k` with unsigned values `x` and `k`, such that `0<=k<w`, the C expression `x>>k` yields the value `floor(x/2^k)`.
-* Two's-complement multiplication by a power of 2
-  * First, the shifting should be performed using an arithmetic right shift, to ensure that negative values remain negative.
-  * Two’s-complement division by a power of 2, rounding down
-    * Let C variables `x` and `k` have two’s-complement value `x` and unsigned value `k` respectively, such that `0<=k<w`. The C expression `x>>k`, when the shift is performed arithmetically, yields the value `floor(x/2^k)`.
-  * For `x>=0`, variable `x` has 0 as the most significant bit, and so the effect of an arithmetic shift is the same as for a logical right shift.
-    
+##### Unsigned integers
+
+* Right shifting is guaranteed to be performed **logically** for unsigned values.
+* The result of shifting unsigned integers consistently rounds toward zero, as is the convention for integer division. 
+* For C variables `x` and `k` with unsigned values `x` and `k`, such that `0<=k<w`, the C expression `x>>k` yields the value `floor(x/2^k)`.
+  
+##### Two's-complement multiplication by a power of 2
+* First, the shifting should be performed using an **arithmetic right shift**, to ensure that negative values remain negative (i.e. adding 1 to the left during shift).
+* Two’s-complement division by a power of 2, rounding down.
+  * Let C variables `x` and `k` have two’s-complement value `x` and unsigned value `k` respectively, such that `0<=k<w`. The C expression `x>>k`, when the shift is performed arithmetically, yields the value `floor(x/2^k)`.
+  * For `x>=0`, variable `x` has 0 as the most significant bit, and so the effect of an **arithmetic shift** is the same as for a **logical right shift**. Thus, an arithmetic right shift by `k` is the same as division by 2<sup>k</sup> for a nonnegative number. 
+  
+* We can correct the improper rounding that occurs when a negative number is shifted right by "biasing" the value before shifting.    
+  * Let C variables `x` and `k` have two's-complement value `x` and unsigned value `k`, respectively, such that `0<=k<w`. The C expression `(x+(1<<k)-1)>>k`, when the shift is performed arithmetically, yields the value `ceiling(x/2^k)`.
+* Compute the value `x/2^k` in C:
+```
+(x<0 ? x + (1<<k)-1 : x) >> k
+```
+
 # Floating Point
