@@ -12,8 +12,8 @@
     * [Truncating Numbers](#truncating-numbers)
   * [Integer Arithmetic](#integer-arithmetic)
 * [Floating Point](#floating-point)
-* []()
-* []()
+  * [Fractional Binary Numbers](#fractional-binary-numbers)
+  * [IEEE Floating-Point Representation](#ieee-floating-point-representation)
 * []()
 
 # Information Storage
