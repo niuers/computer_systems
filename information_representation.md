@@ -200,3 +200,13 @@
 ```
 
 # Floating Point
+> A floating-point representation encodes rational numbers of the form V = x\*2<sup>y</sup>. It's useful as an approximation to real arithmetic.
+* Virtually all computers support **IEEE floating point**.
+
+## Fractional Binary Numbers
+* Binary numbers of the form `0.11 ... 1` represent numbers just below 1. For example, `0.111111` represents `63/64`. We will use the shorthand notation `1.0 − ε`.
+
+## IEEE Floating-Point Representation
+* We would like to represent numbers in a form x\*2<sup>y</sup> by giving the values of `x` and `y`. 
+* The IEEE floating-point standard represents a number in a form V = (-1)<sup>s</sup>\*M\*2<sup>E</sup>. 
+
