@@ -200,13 +200,29 @@
 ```
 
 # Floating Point
-> A floating-point representation encodes rational numbers of the form V = x\*2<sup>y</sup>. It's useful as an approximation to real arithmetic.
+> A floating-point representation encodes rational numbers of the form V = x×2<sup>y</sup>. It's useful as an approximation to real arithmetic.
 * Virtually all computers support **IEEE floating point**.
 
 ## Fractional Binary Numbers
 * Binary numbers of the form `0.11 ... 1` represent numbers just below 1. For example, `0.111111` represents `63/64`. We will use the shorthand notation `1.0 − ε`.
 
 ## IEEE Floating-Point Representation
-* We would like to represent numbers in a form x\*2<sup>y</sup> by giving the values of `x` and `y`. 
-* The IEEE floating-point standard represents a number in a form V = (-1)<sup>s</sup>\*M\*2<sup>E</sup>. 
+* We would like to represent numbers in a form x×2<sup>y</sup> by giving the values of `x` and `y`. 
+* The IEEE floating-point standard represents a number in a form V = (-1)<sup>s</sup>×M×2<sup>E</sup>. 
+  * The **sign s** determines whether the number is positive or negative, where the interpretation of the sign bit for numeric value 0 is ahndled as a special case.
+  * The **significand M** is a fractional binary number that ranges either between 1 and `2-ε` or between 0 and `1-ε`.
+  * The **exponent E** weights the value by a (possibly negative) power of 2.
 
+### Single Precision vs. Double Precision
+* Single-precision floating-point format
+  * A `float` in C
+* Double-precision floating-point format
+  * A `double` in C
+  * A `float` in Python
+* Standard floating-point formats
+![Standard floating-point formats](resources/standard_floating_point_formats.png)
+
+
+### The Value Encoded by a Given Bit Representation
+
+##### Normalized Values
