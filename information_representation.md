@@ -209,20 +209,54 @@
 ## IEEE Floating-Point Representation
 * We would like to represent numbers in a form x×2<sup>y</sup> by giving the values of `x` and `y`. 
 * The IEEE floating-point standard represents a number in a form V = (-1)<sup>s</sup>×M×2<sup>E</sup>. 
-  * The **sign s** determines whether the number is positive or negative, where the interpretation of the sign bit for numeric value 0 is ahndled as a special case.
-  * The **significand M** is a fractional binary number that ranges either between 1 and `2-ε` or between 0 and `1-ε`.
-  * The **exponent E** weights the value by a (possibly negative) power of 2.
+  * The **sign s** determines whether the number is positive or negative, where the interpretation of the sign bit for numeric value 0 is ahndled as a special case. Encoded by the single sign bit **s** field. 
+  * The **significand M** is a fractional binary number that ranges either between 1 and `2-ε` or between 0 and `1-ε`. Encoded by the `n-bit` **frac** field. 
+  * The **exponent E** weights the value by a (possibly negative) power of 2. Encoded by the `k-bit` **exp** field.
+
+* Standard floating-point formats
+![Standard floating-point formats](resources/standard_floating_point_formats.png)
+(cited from "Computer Systems: A Programmer‘s Perspective" by R. Bryant, D. Hallaron, 2003)
+
 
 ### Single Precision vs. Double Precision
 * Single-precision floating-point format
+  * s = 1, k = 8, n = 23
   * A `float` in C
 * Double-precision floating-point format
+  * s = 1, k = 11, n = 52
   * A `double` in C
   * A `float` in Python
-* Standard floating-point formats
-![Standard floating-point formats](resources/standard_floating_point_formats.png)
 
-
-### The Value Encoded by a Given Bit Representation
+### Categories of the Values Encoded by a Given Bit Representation
+![Categories of Single Precision Floating Point Value](resources/categories_of_singe_precision_floating_point_values.png)
 
 ##### Normalized Values
+* It occurs when the bit pattern of **exp** is neither all zeros (numeric value 0) nor all ones (numeric value 255 for single precision, 2047 for double).
+
+* The exponent field is interpreted as representing a signed integer in **biased** form. 
+  * That is, the exponent value is `E = e - Bias`, where `e` is the unsigned number having bit representation e<sub>k-1</sub>...e<sub>1</sub>e<sub>0</sub> and *Bias* is a bias value equal to 2<sup>k-1</sup> - 1 (127 for single precision, 1023 for double). 
+  * This yields exponent ranges from -126 to +127 for single precision and -1022 to +1023 for double precision.
+  * The bias is to make smooth transition from denormalized to normalized values.
+* The fraction field **frac** is intepreted as representing the fractional value *f*, where 0&le;f<1, having binary representation 0.f<sub>n-1</sub>...f<sub>1</sub>f<sub>0</sub>, that is, with the binary point to the left of the most significant bit. 
+  * The significand is defined to be `M = 1 + f`.
+  * This is called an *implied leading 1* representation.
+  * This is a trick to get an additional bit of precision for free, since we cal always adjust the exponent E so that significand M is in the range 1&le;M<2.
+
+##### Denormalized Values
+* The exponent field is all zeros.
+  * The exponent value is `E = 1 - Bias`.
+  * The significand value is `M = f`.
+  
+* The floating-point representation of +0.0 has a bit patten of all zeros: the sign bit is 0, the exponent field is all zero, and the fraction field is all zeros. 
+* When the sign bit is 1, but the other fields are all zeros, we get the value -0.0. 
+
+* Purposes of Denormalized Values
+  * To provide a way to represent numeric value 0, since with a normalized number we must always have M&ge;1.
+  * To represent numbers that are very close to 0.0. 
+    * They provide a property known as *gradual underflow* in which possible numeric values are spaced evenly near 0.0.
+
+##### Special Values
+* The exponent field is all ones. 
+  * When the fraction field is all zeros, the value is either +∞ or -∞ depending on the sign bit. 
+    * Infinity can represent results that overflow
+  * When the fraction field is nonzero the resulting value is a *NaN*.   
