@@ -260,3 +260,16 @@
   * When the fraction field is all zeros, the value is either +∞ or -∞ depending on the sign bit. 
     * Infinity can represent results that overflow
   * When the fraction field is nonzero the resulting value is a *NaN*.   
+
+### General Properties for a Floating-Point Representation with a k-bit exponent and an n-bit fraction
+* The value +0.0 always has a bit representation of all zeros.
+* The value 1.0 has a bit representation with all but the most significant bit of the exponent field equal to 1 and all other bits equal to 0. Its significand value is M = 1 and its exponent value is E = 0.
+* Observe that the representable numbers are not uniformly distributed—they are denser nearer the origin.
+* The IEEE format was designed so that floating-point numbers could be sorted using an integer sorting routine.
+  * If we interpret the bit representations of the nonnegative floating-point numbers as unsigned integers they occur in ascending order, as do the values they represent as floating-point numbers. 
+  * A minor difficulty occurs when dealing with negative numbers, since they have a leading 1 and occur in descending order, but this can be overcome without requiring floating-point operations to perform comparisons. 
+  
+## Rounding
+### Task of Rounding Operation
+* Floating-point arithmetic can only approximate real arithmetic, since the repre- sentation has limited range and precision. Thus, for a value `x`, we generally want a systematic method of finding the “closest” matching value `x'` that can be represented in the desired floating-point format. This is the task of the rounding operation
+
