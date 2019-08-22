@@ -14,7 +14,8 @@
 * [Floating Point](#floating-point)
   * [Fractional Binary Numbers](#fractional-binary-numbers)
   * [IEEE Floating-Point Representation](#ieee-floating-point-representation)
-* []()
+* [Rounding](#rounding)
+* [Floating-Point Operations](#floating-point-operations)
 
 # Information Storage
 * The Smallest Addressable Unit: most computers use blocks of **8-bits** or **bytes**, as the smallest addressable unit of memory.
@@ -272,4 +273,26 @@
 ## Rounding
 ### Task of Rounding Operation
 * Floating-point arithmetic can only approximate real arithmetic, since the repre- sentation has limited range and precision. Thus, for a value `x`, we generally want a systematic method of finding the “closest” matching value `x'` that can be represented in the desired floating-point format. This is the task of the rounding operation
+* One key problem is to define the direction to round a value that is halfway between two possibilities. 
+* An alternative approach is to maintain a lower and an upper bound on the actual number. For example, we could determine representable values `x−` and `x+` such that the value `x` is guaranteed to lie between them: `x-<=x<=x+`.
 
+### Four IEEE Rounding Modes
+* Round to Even (Round to Nearest)
+  * This is the default method. It finds a closet match, while the other three produce guaranteed bounds on the actual value.
+  * Round-to-even mode adopts the convention that it rounds the number either upward or downward such that the least significant digit of the result is even.
+  * Rounding toward even numbers avoids statistical bias (if we just rounding down or up) in most real-life situations. It will round upward about 50% of the time and round downward about 50% of the time.
+  
+* Round Twoard Zero
+* Round Down
+* Round Up
+
+## Floating-Point Operations
+* IEEE rule: viewing floating-point values `x` and `y` as real numbers, and some operation `op` defined over real numbers, the computation should yield `Round(x op y)`, the result of applying rounding to the exact result of the real operation. 
+* Floating-Point Addition (with the rule above) over real numbers also forms an abelian group, but we must consider what effect rounding has on these properties.
+  * It's commutative
+  * Most values have inverse under floating-point addition. Except infinities and NaNs.
+    * `+∞ - ∞ = NaN`
+    * `NaN + x = NaN` for any `x`
+  * It's not associative. 
+    * `(3.14+1e10)-1e10=0.0` while `3.14 + (1e10-1e10) = 3.14`
+    
