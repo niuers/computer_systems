@@ -15,10 +15,16 @@
   * [Fractional Binary Numbers](#fractional-binary-numbers)
   * [IEEE Floating-Point Representation](#ieee-floating-point-representation)
 * [Rounding](#rounding)
+  * [Task of Rounding Operation](#task-of-rounding-operation)  
+  * [Four IEEE Rounding Modes](#four-ieee-rounding-modes)
 * [Floating-Point Operations](#floating-point-operations)
+  * [Floating-Point Addition](#floating-point-addition)
+  * [Floating-Point Multiplication](#floating-point-multiplication)
+  * [Floating Point in C](#floating-point-in-c)
+  
 
 # Information Storage
-* The Smallest Addressable Unit: most computers use blocks of **8-bits** or **bytes**, as the smallest addressable unit of memory.
+* **Bytes**(8-bits): The smallest addressable unit of memory in most computers.
 
 ## Data Sizes
 
@@ -34,13 +40,11 @@
     * Data type `char *` (a pointer) and `long` commonly have 4 bytes in 32-bit programs and 8 bytes in 64-bit programs.
     
 ### Implications
-
 * Programmers should strive to make their programs portable across different machines and compilers. 
   * Make the program insensitive to the exact sizes of the different data types.
     * Ex1. Programs that enable communications over the Internet need to have data types compatible with the standard protocol.
 
 # Integer Representations
-
 ## Integer Data Types
 
 #### Integer Data Types in C
