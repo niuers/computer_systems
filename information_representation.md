@@ -21,6 +21,7 @@
   * [Floating-Point Addition](#floating-point-addition)
   * [Floating-Point Multiplication](#floating-point-multiplication)
   * [Floating Point in C](#floating-point-in-c)
+  * [Floating Point in Python](#floating-point-in-python)
   
 
 # Information Storage
@@ -212,6 +213,11 @@
 > A floating-point representation encodes rational numbers of the form V = x×2<sup>y</sup>. It's useful as an approximation to real arithmetic.
 * Virtually all computers support **IEEE floating point** and most machines encode floating-point numbers using IEEE Standard 754.
 
+* Representation error: It refers to the fact that some (most, actually) decimal fractions cannot be represented exactly as binary (base 2) fractions. 
+  * This is the chief reason why Python (or Perl, C, C++, Java, Fortran, and many others) often won’t display the exact decimal number you expect.
+  * Example: No matter how many base 2 digits you’re willing to use, the decimal value 0.1 cannot be represented exactly as a base 2 fraction.
+  * The computer strives to convert 0.1 to the closest fraction it can of the form `J/(2**N)` where J is an integer containing exactly 53 bits. See [Python Doc: Floating Point Arithmetic: Issues and Limitations](https://docs.python.org/3/tutorial/floatingpoint.html)
+
 ## Fractional Binary Numbers
 * Binary numbers of the form `0.11 ... 1` represent numbers just below 1. For example, `0.111111` represents `63/64`. We will use the shorthand notation `1.0 − ε`.
 
@@ -236,6 +242,7 @@
   * s = 1, k = 11, n = 52
   * A `double` in C
   * A `float` in Python
+    * Almost all platforms map Python `floats` to IEEE-754 “double precision”. 754 doubles contain 53 bits of precision  (52 explicitly stored).
 
 ### Categories of the Values Encoded by a Given Bit Representation
 ![Categories of Single Precision Floating Point Value](resources/categories_of_singe_precision_floating_point_values.png)
@@ -341,6 +348,52 @@
   * From *float* or *double* to *int*
     * The value will be rounded toward zero.
     * The value may overflow. 
+
+## Floating Point in Python
+* Python only prints a decimal approximation to the true decimal value of the binary approximation stored by the machine.
+* There are many different decimal numbers that share the same nearest approximate binary fraction. 
+  * For example, the numbers `0.1` and `0.10000000000000001` and `0.1000000000000000055511151231257827021181583404541015625` are all approximated by `3602879701896397 / 2 ** 55`. 
+  * Since all of these decimal values share the same approximation, any one of them could be displayed while still preserving the invariant `eval(repr(x)) == x`.
+  * Historically, the Python prompt and built-in `repr()` function would choose the one with 17 significant digits, `0.10000000000000001`. Starting with Python 3.1, Python (on most systems) is now able to choose the shortest of these and simply display `0.1`.
+* For use cases which require exact decimal representation, try using the `decimal` module which implements decimal arithmetic suitable for accounting applications and high-precision applications.
+* Another form of exact arithmetic is supported by the fractions module which implements arithmetic based on rational numbers (so the numbers like 1/3 can be represented exactly).
+
+### To Losslessly Recreate the Original Value
+* The `float.as_integer_ratio()` method expresses the value of a float as a fraction
+```
+>>> x = 3.14159
+>>> x.as_integer_ratio()
+(3537115888337719, 1125899906842624)
+>>> x == 3537115888337719 / 1125899906842624
+True
+```
+
+* The `float.hex()` method expresses a `float` in hexadecimal (base 16), again giving the exact value stored by your computer:
+```
+>>> x.hex()
+'0x1.921f9f01b866ep+1'
+# This precise hexadecimal representation can be used to reconstruct the float value exactly:
+>>>
+>>> x == float.fromhex('0x1.921f9f01b866ep+1')
+True
+```
+
+* Since the representation is exact, it is useful for reliably porting values across different versions of Python (platform independence) and exchanging data with other languages that support the same format (such as Java and C99).
+
+* Another helpful tool is the math.fsum() function which helps mitigate loss-of-precision during summation. 
+* It tracks “lost digits” as values are added onto a running total. That can make a difference in overall accuracy so that the errors do not accumulate to the point where they affect the final total:
+```
+>>> sum([0.1] * 10) == 1.0
+False
+>>> math.fsum([0.1] * 10) == 1.0
+True
+```
+
+
+
+  
+
+
 
   
 
