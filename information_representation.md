@@ -136,6 +136,9 @@
     * It has an identity element 0
     * Every element has an additive inverse
   (N.B. Both unsigned and two's-complement integer addition form an abelian group.)
+  (N.B. Both unsigned and two's-complement arithmetic satisfy distributivity)
+  * Satisfying the `abelian` properties allows compilers to do many optimizations.
+    * `7*x` can be replaced by `(x<<3)-x` using associative, commutative, and distributive properties.
   
 ### Two’s-Complement Addition
 * We avoid ever-expanding data sizes by truncating the representation to w bits. The result is not a modular addition.
@@ -203,7 +206,7 @@
 
 # Floating Point
 > A floating-point representation encodes rational numbers of the form V = x×2<sup>y</sup>. It's useful as an approximation to real arithmetic.
-* Virtually all computers support **IEEE floating point**.
+* Virtually all computers support **IEEE floating point** and most machines encode floating-point numbers using IEEE Standard 754.
 
 ## Fractional Binary Numbers
 * Binary numbers of the form `0.11 ... 1` represent numbers just below 1. For example, `0.111111` represents `63/64`. We will use the shorthand notation `1.0 − ε`.
@@ -219,6 +222,7 @@
 ![Standard floating-point formats](resources/standard_floating_point_formats.png)
 (cited from "Computer Systems: A Programmer‘s Perspective" by R. Bryant, D. Hallaron, 2003)
 
+* Floating-point values can both overflow when they exceed the range of the representation or underflow when they are so close to 0.0 that they are changed to zero. 
 
 ### Single Precision vs. Double Precision
 * Single-precision floating-point format
