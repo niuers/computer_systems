@@ -135,7 +135,8 @@
     * It is associative
     * It has an identity element 0
     * Every element has an additive inverse
-    
+  (N.B. Both unsigned and two's-complement integer addition form an abelian group.)
+  
 ### Two’s-Complement Addition
 * We avoid ever-expanding data sizes by truncating the representation to w bits. The result is not a modular addition.
 * There are positive overflow and negative overflow.
@@ -287,12 +288,52 @@
 * Round Up
 
 ## Floating-Point Operations
-* IEEE rule: viewing floating-point values `x` and `y` as real numbers, and some operation `op` defined over real numbers, the computation should yield `Round(x op y)`, the result of applying rounding to the exact result of the real operation. 
-* Floating-Point Addition (with the rule above) over real numbers also forms an abelian group, but we must consider what effect rounding has on these properties.
-  * It's commutative
-  * Most values have inverse under floating-point addition. Except infinities and NaNs.
-    * `+∞ - ∞ = NaN`
-    * `NaN + x = NaN` for any `x`
-  * It's not associative. 
-    * `(3.14+1e10)-1e10=0.0` while `3.14 + (1e10-1e10) = 3.14`
-    
+
+* IEEE Rule: viewing floating-point values `x` and `y` as real numbers, and some operation `op` defined over real numbers, the computation should yield `Round(x op y)`, the result of applying rounding to the exact result of the real operation. 
+  * This is independent of any particular hardware or software realization.
+
+### Floating-Point Addition
+* Addition over real numbers also forms an abelian group, but we must consider what effect rounding has on these properties.
+* Abelian Group Properties for floating-point addition: `Round(x+y)`
+* It's commutative for all values of `x` and `y`
+* Most values have inverse under floating-point addition. Except infinities and `NaN`s.
+  * `+∞ - ∞ = NaN`
+  * `NaN + x = NaN` for any `x`
+* It's not associative. 
+  * `(3.14+1e10)-1e10=0.0` while `3.14 + (1e10-1e10) = 3.14` (assuming single-precision floating point representation). In former calculation `3.14` is lost due to rounding. 
+  * This has important implications for scientific programmers and compiler writers.
+* It satisfies the following monotonicity property: If a&ge;b, then `Round(x+a)` &ge; `Round(y+b)` for any values of `a`, `b`, and `x` other than `NaN`. 
+  * This property of real (and integer) addition is not obeyed by unsigned or two's-complement addition. 
+
+### Floating-Point Multiplication
+* Let's consider the floating-point multiplication: `Round(x×y)`.
+* This operation is closed under multiplication (although possibly yielding infinity or Nan).
+* It is commutative
+* It has 1.0 as a multiplicative identity
+* It is not associative due to the possibility of overflow or the loss of precision due to rounding. 
+  * For single-precision floating point, `(1e20*1e20)*1e-20 = +∞` while `1e20*(1e20*1e-20)= 1e20`
+* It does not distribute over addition.
+  * `1e20*(1e20-1e20) = 0.0` while `1e20*1e20 - 1e20*1e20 = NaN`
+* It satisfies monotonicity property for any values of `a`, `b`, and `c` other than `NaN`:
+  *  a &ge; b and c &ge; 0 ==> Round(a×c) &ge; Round(b×c)
+  *  a &ge; b and c &le; 0 ==> Round(a×c) &le; Round(b×c)
+  * We also guaranteed that `Round(a×a)` &ge; `0` as long as `a!= NaN`
+  * None of these properties hold for unsigned or two's-complement multiplication.
+
+## Floating Point in C
+* On machines that suport IEEE floating point:
+  * `float` and `double` correspond to single- and double-precision floating point. 
+  * The machines use the `round-to-even` rounding mode.
+* However C standards do not require the machine to use IEEE floating point
+  * No standard methods to change the rounding mode
+  * No standard methods to get special values such as: `-0`, `+∞`, `-∞` or `NaN`
+
+### Casting Values
+* When casting values between *int*, *float*, and *double* formats, the program changes the numeric values and the bit representations by following certains rules.
+  * From *float* or *double* to *int*
+    * The value will be rounded toward zero.
+    * The value may overflow. 
+
+  
+
+
