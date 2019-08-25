@@ -20,6 +20,7 @@
 * [Floating-Point Operations](#floating-point-operations)
   * [Floating-Point Addition](#floating-point-addition)
   * [Floating-Point Multiplication](#floating-point-multiplication)
+* [Floating Point in Programming Languages](#floating-point-in-programming-languages)  
   * [Floating Point in C](#floating-point-in-c)
   * [Floating Point in Python](#floating-point-in-python)
   
@@ -349,6 +350,7 @@
     * The value will be rounded toward zero.
     * The value may overflow. 
 
+# Floating Point in Programming Languages
 ## Floating Point in Python
 * Python only prints a decimal approximation to the true decimal value of the binary approximation stored by the machine.
 * There are many different decimal numbers that share the same nearest approximate binary fraction. 
