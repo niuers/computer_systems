@@ -11,15 +11,15 @@
     * [Expanding the Bit Representation of a Number](#expanding-the-bit-representation-of-a-number)
     * [Truncating Numbers](#truncating-numbers)
   * [Integer Arithmetic](#integer-arithmetic)
-* [Floating Point](#floating-point)
+* [Floating Point Representation](#floating-point-representation)
   * [Fractional Binary Numbers](#fractional-binary-numbers)
   * [IEEE Floating-Point Representation](#ieee-floating-point-representation)
-* [Rounding](#rounding)
-  * [Task of Rounding Operation](#task-of-rounding-operation)  
-  * [Four IEEE Rounding Modes](#four-ieee-rounding-modes)
-* [Floating-Point Operations](#floating-point-operations)
-  * [Floating-Point Addition](#floating-point-addition)
-  * [Floating-Point Multiplication](#floating-point-multiplication)
+  * [Rounding](#rounding)
+    * [Task of Rounding Operation](#task-of-rounding-operation)  
+    * [Four IEEE Rounding Modes](#four-ieee-rounding-modes)
+  * [Floating-Point Operations](#floating-point-operations)
+    * [Floating-Point Addition](#floating-point-addition)
+    * [Floating-Point Multiplication](#floating-point-multiplication)
 * [Floating Point in Programming Languages](#floating-point-in-programming-languages)  
   * [Floating Point in C](#floating-point-in-c)
   * [Floating Point in Python](#floating-point-in-python)
@@ -210,7 +210,7 @@
 (x<0 ? x + (1<<k)-1 : x) >> k
 ```
 
-# Floating Point
+# Floating Point Representation
 > A floating-point representation encodes rational numbers of the form V = x×2<sup>y</sup>. It's useful as an approximation to real arithmetic.
 * Virtually all computers support **IEEE floating point** and most machines encode floating-point numbers using IEEE Standard 754.
 
@@ -287,13 +287,13 @@
   * If we interpret the bit representations of the nonnegative floating-point numbers as unsigned integers they occur in ascending order, as do the values they represent as floating-point numbers. 
   * A minor difficulty occurs when dealing with negative numbers, since they have a leading 1 and occur in descending order, but this can be overcome without requiring floating-point operations to perform comparisons. 
   
-## Rounding
-### Task of Rounding Operation
+### Rounding
+#### Task of Rounding Operation
 * Floating-point arithmetic can only approximate real arithmetic, since the repre- sentation has limited range and precision. Thus, for a value `x`, we generally want a systematic method of finding the “closest” matching value `x'` that can be represented in the desired floating-point format. This is the task of the rounding operation
 * One key problem is to define the direction to round a value that is halfway between two possibilities. 
 * An alternative approach is to maintain a lower and an upper bound on the actual number. For example, we could determine representable values `x−` and `x+` such that the value `x` is guaranteed to lie between them: `x-<=x<=x+`.
 
-### Four IEEE Rounding Modes
+#### Four IEEE Rounding Modes
 * Round to Even (Round to Nearest)
   * This is the default method. It finds a closet match, while the other three produce guaranteed bounds on the actual value.
   * Round-to-even mode adopts the convention that it rounds the number either upward or downward such that the least significant digit of the result is even.
@@ -303,12 +303,12 @@
 * Round Down
 * Round Up
 
-## Floating-Point Operations
+### Floating-Point Operations
 
 * IEEE Rule: viewing floating-point values `x` and `y` as real numbers, and some operation `op` defined over real numbers, the computation should yield `Round(x op y)`, the result of applying rounding to the exact result of the real operation. 
   * This is independent of any particular hardware or software realization.
 
-### Floating-Point Addition
+#### Floating-Point Addition
 * Addition over real numbers also forms an abelian group, but we must consider what effect rounding has on these properties.
 * Abelian Group Properties for floating-point addition: `Round(x+y)`
 * It's commutative for all values of `x` and `y`
@@ -321,7 +321,7 @@
 * It satisfies the following monotonicity property: If a&ge;b, then `Round(x+a)` &ge; `Round(y+b)` for any values of `a`, `b`, and `x` other than `NaN`. 
   * This property of real (and integer) addition is not obeyed by unsigned or two's-complement addition. 
 
-### Floating-Point Multiplication
+#### Floating-Point Multiplication
 * Let's consider the floating-point multiplication: `Round(x×y)`.
 * This operation is closed under multiplication (although possibly yielding infinity or Nan).
 * It is commutative
@@ -335,6 +335,8 @@
   *  a &ge; b and c &le; 0 ==> Round(a×c) &le; Round(b×c)
   * We also guaranteed that `Round(a×a)` &ge; `0` as long as `a!= NaN`
   * None of these properties hold for unsigned or two's-complement multiplication.
+
+# Floating Point in Programming Languages
 
 ## Floating Point in C
 * On machines that suport IEEE floating point:
@@ -350,7 +352,6 @@
     * The value will be rounded toward zero.
     * The value may overflow. 
 
-# Floating Point in Programming Languages
 ## Floating Point in Python
 * Python only prints a decimal approximation to the true decimal value of the binary approximation stored by the machine.
 * There are many different decimal numbers that share the same nearest approximate binary fraction. 
