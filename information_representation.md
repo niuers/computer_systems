@@ -17,6 +17,8 @@
   * [Rounding](#rounding)
     * [Task of Rounding Operation](#task-of-rounding-operation)  
     * [Four IEEE Rounding Modes](#four-ieee-rounding-modes)
+  * [Insignificant Digits](#insignificant-digits)
+  * [Crazy Conversions](#crazy-conversions)
   * [Floating-Point Operations](#floating-point-operations)
     * [Floating-Point Addition](#floating-point-addition)
     * [Floating-Point Multiplication](#floating-point-multiplication)
@@ -238,9 +240,11 @@
 ### Single Precision vs. Double Precision
 * Single-precision floating-point format
   * s = 1, k = 8, n = 23
+  * The 24 bits (including the hidden bit) of mantissa in a 32-bit floating-point number represent approximately 7 significant decimal digits.
   * A `float` in C
 * Double-precision floating-point format
   * s = 1, k = 11, n = 52
+  * The 53 bits (including the hidden bit) of mantissa in a 64-bit floating-point number represent approximately 16 significant decimal digits.
   * A `double` in C
   * A `float` in Python
     * Almost all platforms map Python `floats` to IEEE-754 “double precision”. 754 doubles contain 53 bits of precision  (52 explicitly stored).
@@ -286,10 +290,54 @@
 * The IEEE format was designed so that floating-point numbers could be sorted using an integer sorting routine.
   * If we interpret the bit representations of the nonnegative floating-point numbers as unsigned integers they occur in ascending order, as do the values they represent as floating-point numbers. 
   * A minor difficulty occurs when dealing with negative numbers, since they have a leading 1 and occur in descending order, but this can be overcome without requiring floating-point operations to perform comparisons. 
+* Because the same number of bits are used to represent all normalized numbers, [the smaller the exponent, the greater the density of representable numbers](http://www.lahey.com/float.htm). For example, there are approximately 8,388,607 single-precision numbers between 1.0 and 2.0, while there are only about 8191 between 1023.0 and 1024.0.
+
+### [Insignificant Digits](http://www.lahey.com/float.htm)
+* Meaningless digits could seem to be significant
+```  
+#include <stdio.h>
+int main()
+{
+    float a = 1000.2;
+    float b = 1000.0;
+    float c = a - b;
+    printf ("%f", c);
+    return 0;
+}
+```
+
+* A single-precision entity can represent a maximum of about 7 decimal digits of precision, so the subtraction above represents (1000.200 - 1000.000). The result, therefore, can only represent about 3 decimal digits. The program, however, will happily print out "0.200012". Because 1000.2 is not exactly representable in binary floating-point and 1000.0 is, the result `c` is a little larger than 0.2. The computer doesn't know that the digits beyond ".200" have no meaning.
+* If you stay aware of the number of decimal digits represented by a data type, approximating the number of significant digits is a straight-forward, but perhaps time-consuming, task. Give the most attention to:
+  * subtractions of numbers that are nearly equal, 
+  * additions of numbers whose magnitudes are nearly equal, but whose signs are opposite, and 
+  * additions and subtractions of numbers that differ greatly in magnitude.
+
+### [Crazy Conversions]
+* Conversions to integer can unmask inaccuracies in a floating-point number. 
+* The closest single-precision floating-point number to 21.33 is slightly less than 21.33, so when it is multiplied by 100., the result `Y` is slightly less than 2133.0. If you print `Y` in a typical floating-point format, rounding causes it to be displayed as 2133.00. However, if you assign `Y` to an integer `I`, no rounding is done, and the number is truncated to 2132.
+```
+REAL X, Y
+INTEGER I
+X = 21.33       ! Slightly less than 21.33
+Y = X * 100.    ! Slightly less than 2133.0
+I = Y           ! Truncates to 2132
+PRINT *, Y, I   ! Prints "2133.00      2132"
+END
+```
+
+The following program prints "1.66661000251770" when compiled with Lahey's LF90:
+DOUBLE PRECISION D
+REAL X
+X = 1.66661     ! Assign to single precision
+D = X           ! Convert to double precision
+PRINT *, D
+END
+You ask, "Why do you extend the single-precision number with the seemingly random '000251770'?" Well, the number isn't extended with random values; the computer's floating-point does the conversion by padding with zeros in the binary representation. So D is exactly equal to X, but when it is printed out to 15 decimal digits, the inexactness shows up. This is also another example of insignificant digits. Remember that assigning a single-precision number to a double-precision number doesn't increase the number of significant digits.
+
   
 ### Rounding
 #### Task of Rounding Operation
-* Floating-point arithmetic can only approximate real arithmetic, since the repre- sentation has limited range and precision. Thus, for a value `x`, we generally want a systematic method of finding the “closest” matching value `x'` that can be represented in the desired floating-point format. This is the task of the rounding operation
+* Floating-point arithmetic can only approximate real arithmetic, since the representation has limited range and precision. Thus, for a value `x`, we generally want a systematic method of finding the “closest” matching value `x'` that can be represented in the desired floating-point format. This is the task of the rounding operation
 * One key problem is to define the direction to round a value that is halfway between two possibilities. 
 * An alternative approach is to maintain a lower and an upper bound on the actual number. For example, we could determine representable values `x−` and `x+` such that the value `x` is guaranteed to lie between them: `x-<=x<=x+`.
 
@@ -298,7 +346,6 @@
   * This is the default method. It finds a closet match, while the other three produce guaranteed bounds on the actual value.
   * Round-to-even mode adopts the convention that it rounds the number either upward or downward such that the least significant digit of the result is even.
   * Rounding toward even numbers avoids statistical bias (if we just rounding down or up) in most real-life situations. It will round upward about 50% of the time and round downward about 50% of the time.
-  
 * Round Twoard Zero
 * Round Down
 * Round Up
@@ -350,8 +397,8 @@
 * When casting values between *int*, *float*, and *double* formats, the program changes the numeric values and the bit representations by following certains rules.
   * From *float* or *double* to *int*
     * The value will be rounded toward zero.
-    * The value may overflow. 
-
+    * The value may overflow. Any conversion from floating point to integer that cannot assign a reasonable integer approximation yields *integer indefinite value*, i.e. the bit pattern [10 ... 00]. Thus, the expression `(int) +1e10` yields `-21483648`, generating a negative value from a positive one.
+    
 ## Floating Point in Python
 * Python only prints a decimal approximation to the true decimal value of the binary approximation stored by the machine.
 * There are many different decimal numbers that share the same nearest approximate binary fraction. 
