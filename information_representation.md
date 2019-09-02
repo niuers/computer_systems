@@ -233,8 +233,9 @@
 * We would like to represent numbers in a form x×2<sup>y</sup> by giving the values of `x` and `y`. 
 * The IEEE floating-point standard represents a number in a form V = (-1)<sup>s</sup>×M×2<sup>E</sup>. 
   * The **sign s** determines whether the number is positive or negative, where the interpretation of the sign bit for numeric value 0 is ahndled as a special case. Encoded by the single sign bit **s** field. 
-  * The **significand M** is a fractional binary number that ranges either between 1 and `2-ε` or between 0 and `1-ε`. Encoded by the `n-bit` **frac** field. 
+  * The **significand M** is a fractional binary number that ranges either between 1 and `2-ε` or between 0 and `1-ε`. Encoded by the `n-bit` **frac** field. Also called **Mantissa**.
   * The **exponent E** weights the value by a (possibly negative) power of 2. Encoded by the `k-bit` **exp** field.
+* The IEEE 754 standard guarantees that all machines will produce the same results—but those results may not be mathematically correct!
 
 * Standard floating-point formats
 ![Standard floating-point formats](resources/standard_floating_point_formats.png)
@@ -242,20 +243,30 @@
 
 * Floating-point values can both overflow when they exceed the range of the representation or underflow when they are so close to 0.0 that they are changed to zero. 
 
+### Machine Epsilon
+* The gap between `1` and the next normalized floating-point number is known as machine epsilon.
+  * For 32-bit single precision floating numbers, this gap is (1 + 2<sup>−23</sup>) − 1 = 2<sup>−23</sup>. Note that this is not the same as the smallest positive floating-point number.
+* This is the relative error in each operation.
+
 ### Single Precision vs. Double Precision
 * The precision of a floating-point format is the number of positions reserved for binary digits plus one (for the hidden bit).
 * Single-precision floating-point format
   * s = 1, k = 8, n = 23
   * precision is 23 + 1 = 24
-  * The 24 bits (including the hidden bit) of mantissa in a 32-bit floating-point number represent approximately 7 significant decimal digits.
+  * The 24 bits (including the hidden bit) of mantissa in a 32-bit floating-point number represent approximately 7 significant decimal digits. 
+  * Note here we use the same number of bits as 32-bit integers to represent real numbers. With 32 bits, there are 2<sup>32</sup>-1, or about 4 billion, different bit patterns. These can represent 4 billion integers or 4 billion reals.
   * A `float` in C
+  * REAL\*4 / REAL (32 bit ) in Fortran
+  
 * Double-precision floating-point format
   * s = 1, k = 11, n = 52
   * precision is 52 + 1 = 53
-  * The 53 bits (including the hidden bit) of mantissa in a 64-bit floating-point number represent approximately 16 significant decimal digits.
+  * The 53 bits (including the hidden bit) of mantissa in a 64-bit floating-point number represent approximately 16 significant decimal digits. 
   * A `double` in C
   * A `float` in Python
     * Almost all platforms map Python `floats` to IEEE-754 “double precision”. 754 doubles contain 53 bits of precision  (52 explicitly stored).
+  * REAL\*8 /DOUBLE PRECISION (64 bit) in Fortran
+
 
 ### Categories of the Values Encoded by a Given Bit Representation
 ![Categories of Single Precision Floating Point Value](resources/categories_of_singe_precision_floating_point_values.png)
@@ -294,17 +305,16 @@
 ### General Properties for a Floating-Point Representation with a k-bit exponent and an n-bit fraction
 * The value +0.0 always has a bit representation of all zeros.
 * The value 1.0 has a bit representation with all but the most significant bit of the exponent field equal to 1 and all other bits equal to 0. Its significand value is M = 1 and its exponent value is E = 0.
-* The spacing between the floating-point numbers is not uniform, but varies from one dyadic interval [2<sup>n</sup>, 2<sup>n+1</sup>) to another. They are denser nearer the origin.
+* The spacing between the floating-point numbers is not uniform, but varies from one dyadic interval, \[2<sup>n</sup>, 2<sup>n+1</sup>\), to another. Because the same number of bits are used to represent all normalized numbers, the smaller the exponent, the greater the density of representable numbers. The numbers are denser nearer the origin.
+  * They represent same number of values between 2<sup>n</sup> and 2<sup>n+1</sup> as 2<sup>n+1</sup> and 2<sup>n+2</sup>.
+  * This means that for large numbers (both positive and negative) there are very few FP numbers to play with.
 
 * The IEEE format was designed so that floating-point numbers could be sorted using an integer sorting routine.
   * If we interpret the bit representations of the nonnegative floating-point numbers as unsigned integers they occur in ascending order, as do the values they represent as floating-point numbers. 
   * A minor difficulty occurs when dealing with negative numbers, since they have a leading 1 and occur in descending order, but this can be overcome without requiring floating-point operations to perform comparisons. 
 * Because the same number of bits are used to represent all normalized numbers, [the smaller the exponent, the greater the density of representable numbers](http://www.lahey.com/float.htm). For example, there are approximately 8,388,607 single-precision numbers between 1.0 and 2.0, while there are only about 8191 between 1023.0 and 1024.0.
 
-### Machine Epsilon
-* The gap between `1` and the next normalized floating-point number is known as machine epsilon. 
-  * For 32-bit single precision floating numbers, this gap is (1 + 2<sup>−23</sup>) − 1 = 2<sup>−23</sup>. Note that this is not the same as the smallest positive floating-point number.
-  
+ 
 ### [Insignificant Digits](http://www.lahey.com/float.htm)
 * Meaningless digits could seem to be significant
 ```  
