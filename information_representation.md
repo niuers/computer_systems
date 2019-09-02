@@ -221,6 +221,11 @@
   * Example: No matter how many base 2 digits you’re willing to use, the decimal value 0.1 cannot be represented exactly as a base 2 fraction.
   * The computer strives to convert 0.1 to the closest fraction it can of the form `J/(2**N)` where J is an integer containing exactly 53 bits. See [Python Doc: Floating Point Arithmetic: Issues and Limitations](https://docs.python.org/3/tutorial/floatingpoint.html)
 
+## Floating Point vs. Fixed Point Representations
+* A fixed-point representation of a number may be thought to consist of 3 parts: the sign field, integer field, and fractional field.
+* Consider the normalized representation of `x`: ±(1.b<sub>1<sub>b<sub>2</sub>b<sub>3</sub>...)<sub>2</sub> × 2<sup>n</sup>. The normalized representation is achieved by choosing the exponent `n` so that the binary point **floats** to the position after the first nonzero digit. This is the binary version of scientific notation.
+* Check [Fixed-point and floating-point representations of numbers](http://www.math.drexel.edu/~tolya/300_float.pdf) 
+ 
 ## Fractional Binary Numbers
 * Binary numbers of the form `0.11 ... 1` represent numbers just below 1. For example, `0.111111` represents `63/64`. We will use the shorthand notation `1.0 − ε`.
 
@@ -238,12 +243,15 @@
 * Floating-point values can both overflow when they exceed the range of the representation or underflow when they are so close to 0.0 that they are changed to zero. 
 
 ### Single Precision vs. Double Precision
+* The precision of a floating-point format is the number of positions reserved for binary digits plus one (for the hidden bit).
 * Single-precision floating-point format
   * s = 1, k = 8, n = 23
+  * precision is 23 + 1 = 24
   * The 24 bits (including the hidden bit) of mantissa in a 32-bit floating-point number represent approximately 7 significant decimal digits.
   * A `float` in C
 * Double-precision floating-point format
   * s = 1, k = 11, n = 52
+  * precision is 52 + 1 = 53
   * The 53 bits (including the hidden bit) of mantissa in a 64-bit floating-point number represent approximately 16 significant decimal digits.
   * A `double` in C
   * A `float` in Python
@@ -254,7 +262,7 @@
 
 ##### Normalized Values
 * It occurs when the bit pattern of **exp** is neither all zeros (numeric value 0) nor all ones (numeric value 255 for single precision, 2047 for double).
-
+ 
 * The exponent field is interpreted as representing a signed integer in **biased** form. 
   * That is, the exponent value is `E = e - Bias`, where `e` is the unsigned number having bit representation e<sub>k-1</sub>...e<sub>1</sub>e<sub>0</sub> and *Bias* is a bias value equal to 2<sup>k-1</sup> - 1 (127 for single precision, 1023 for double). 
   * This yields exponent ranges from -126 to +127 for single precision and -1022 to +1023 for double precision.
@@ -286,12 +294,17 @@
 ### General Properties for a Floating-Point Representation with a k-bit exponent and an n-bit fraction
 * The value +0.0 always has a bit representation of all zeros.
 * The value 1.0 has a bit representation with all but the most significant bit of the exponent field equal to 1 and all other bits equal to 0. Its significand value is M = 1 and its exponent value is E = 0.
-* Observe that the representable numbers are not uniformly distributed—they are denser nearer the origin.
+* The spacing between the floating-point numbers is not uniform, but varies from one dyadic interval [2<sup>n</sup>, 2<sup>n+1</sup>) to another. They are denser nearer the origin.
+
 * The IEEE format was designed so that floating-point numbers could be sorted using an integer sorting routine.
   * If we interpret the bit representations of the nonnegative floating-point numbers as unsigned integers they occur in ascending order, as do the values they represent as floating-point numbers. 
   * A minor difficulty occurs when dealing with negative numbers, since they have a leading 1 and occur in descending order, but this can be overcome without requiring floating-point operations to perform comparisons. 
 * Because the same number of bits are used to represent all normalized numbers, [the smaller the exponent, the greater the density of representable numbers](http://www.lahey.com/float.htm). For example, there are approximately 8,388,607 single-precision numbers between 1.0 and 2.0, while there are only about 8191 between 1023.0 and 1024.0.
 
+### Machine Epsilon
+* The gap between `1` and the next normalized floating-point number is known as machine epsilon. 
+  * For 32-bit single precision floating numbers, this gap is (1 + 2<sup>−23</sup>) − 1 = 2<sup>−23</sup>. Note that this is not the same as the smallest positive floating-point number.
+  
 ### [Insignificant Digits](http://www.lahey.com/float.htm)
 * Meaningless digits could seem to be significant
 ```  
