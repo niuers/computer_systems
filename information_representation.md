@@ -223,7 +223,7 @@
 
 ## Floating Point vs. Fixed Point Representations
 * A fixed-point representation of a number may be thought to consist of 3 parts: the sign field, integer field, and fractional field.
-* Consider the normalized representation of `x`: ±(1.b<sub>1<sub>b<sub>2</sub>b<sub>3</sub>...)<sub>2</sub> × 2<sup>n</sup>. The normalized representation is achieved by choosing the exponent `n` so that the binary point **floats** to the position after the first nonzero digit. This is the binary version of scientific notation.
+* Consider the normalized representation of `x`: ±(1.b<sub>1</sub>b<sub>2</sub>b<sub>3</sub>...)<sub>2</sub> × 2<sup>n</sup>. The normalized representation is achieved by choosing the exponent `n` so that the binary point **floats** to the position after the first nonzero digit. This is the binary version of scientific notation.
 * Check [Fixed-point and floating-point representations of numbers](http://www.math.drexel.edu/~tolya/300_float.pdf) 
  
 ## Fractional Binary Numbers
