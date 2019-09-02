@@ -218,7 +218,7 @@
 
 * Representation error: It refers to the fact that some (most, actually) decimal fractions cannot be represented exactly as binary (base 2) fractions. 
   * This is the chief reason why Python (or Perl, C, C++, Java, Fortran, and many others) often won’t display the exact decimal number you expect.
-  * Example: No matter how many base 2 digits you’re willing to use, the decimal value 0.1 cannot be represented exactly as a base 2 fraction.
+  * Example: No matter how many base 2 digits you’re willing to use, the decimal value 0.1 cannot be represented exactly as a base 2 fraction. This also happens to 0.3.
   * The computer strives to convert 0.1 to the closest fraction it can of the form `J/(2**N)` where J is an integer containing exactly 53 bits. See [Python Doc: Floating Point Arithmetic: Issues and Limitations](https://docs.python.org/3/tutorial/floatingpoint.html)
 
 ## Floating Point vs. Fixed Point Representations
@@ -253,7 +253,7 @@
 * Single-precision floating-point format
   * s = 1, k = 8, n = 23
   * precision is 23 + 1 = 24
-  * The 24 bits (including the hidden bit) of mantissa in a 32-bit floating-point number represent approximately 7 significant decimal digits. 
+  * The 24 bits (including the hidden bit) of mantissa in a 32-bit floating-point number represent approximately 7 significant decimal digits. (2<sup>-24</sup> ~ 0.6×<sup>-7</sup>)
   * Note here we use the same number of bits as 32-bit integers to represent real numbers. With 32 bits, there are 2<sup>32</sup>-1, or about 4 billion, different bit patterns. These can represent 4 billion integers or 4 billion reals.
   * A `float` in C
   * REAL\*4 / REAL (32 bit ) in Fortran
@@ -261,7 +261,7 @@
 * Double-precision floating-point format
   * s = 1, k = 11, n = 52
   * precision is 52 + 1 = 53
-  * The 53 bits (including the hidden bit) of mantissa in a 64-bit floating-point number represent approximately 16 significant decimal digits. 
+  * The 53 bits (including the hidden bit) of mantissa in a 64-bit floating-point number represent approximately 17 significant decimal digits. (2<sup>-53</sup> ~ 0.1×<sup>-17</sup>)
   * A `double` in C
   * A `float` in Python
     * Almost all platforms map Python `floats` to IEEE-754 “double precision”. 754 doubles contain 53 bits of precision  (52 explicitly stored).
@@ -407,6 +407,22 @@ You ask, "Why do you extend the single-precision number with the seemingly rando
   * None of these properties hold for unsigned or two's-complement multiplication.
 
 # Floating Point in Programming Languages
+* Floating-point programs are deterministic, but should not be expected to be spontaneously portable. (see [Floating Points Numbers: How to work with them correctly and efficiently](http://indico.ictp.it/event/a07176/session/13/contribution/10/material/0/0.pdf))
+* Misconception: I need 3 significant digits in the end, a double holds 15 decimal digits, therefore I shouldn’t worry about precision.
+  * You can destroy 14 significant digits in one subtraction
+  * It will happen to you if you do not expect it
+  * It is relatively easy to avoid if you expect it
+* Misconception: All floating-point operations involve a (somehow fuzzy) rounding error. 
+  * Many are exact, we know who they are and we may even force them into our programs
+  * Since the IEEE-754 standard, rounding is well defined, and you can do maths about it.
+* Cancellation: if you subtract numbers which were very close (example: `1.2345e0 - 1.2344e0 = 1.0000e-4`)
+  * – you loose significant digits (and get meaningless zeroes)
+  * – although the operation is exact! (no rounding error). 
+  * Problems may arise if such a subtraction is followed by multiplications or divisions.
+  * You may get meaningless digits in your result.
+* Some numbers are not exactly representable. So do not expect exact results.
+* Never assume that the result is accurate to the last decimal place. There are always small differences between the "true" answer and what can be calculated with the finite precision of any floating point processing unit.
+* Never compare two floating-point values to see if they are equal or notequal. There are almost always going to be small differences between numbers that "should" be equal. Instead, always check to see if the numbers are nearly equal. In other words, check to see if the difference between them is very small or insignificant.
 
 ## Floating Point in C
 * On machines that suport IEEE floating point:
@@ -421,6 +437,7 @@ You ask, "Why do you extend the single-precision number with the seemingly rando
   * From *float* or *double* to *int*
     * The value will be rounded toward zero.
     * The value may overflow. Any conversion from floating point to integer that cannot assign a reasonable integer approximation yields *integer indefinite value*, i.e. the bit pattern [10 ... 00]. Thus, the expression `(int) +1e10` yields `-21483648`, generating a negative value from a positive one.
+    * The value may underflow.
     
 ## Floating Point in Python
 * Python only prints a decimal approximation to the true decimal value of the binary approximation stored by the machine.
